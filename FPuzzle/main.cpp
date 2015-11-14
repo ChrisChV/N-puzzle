@@ -9,5 +9,6 @@ int main()
 {
     srand(time(NULL));
     Puzzle puz(3,"puz");
+
     puz.Resolver();
 }

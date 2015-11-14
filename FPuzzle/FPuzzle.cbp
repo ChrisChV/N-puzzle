@@ -34,8 +34,10 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="include/ArbolDeJuego.h" />
 		<Unit filename="include/Puzzle.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="src/ArbolDeJuego.cpp" />
 		<Unit filename="src/Puzzle.cpp" />
 		<Extensions>
 			<code_completion />

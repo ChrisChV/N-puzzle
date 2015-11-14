@@ -26,6 +26,8 @@ class ArbolDeJuego
         ArbolDeJuego(int valorC,int, void (*despleG)(T,list<tuple<int,T>>&,T,int));
         bool desplegar(list<T>&);
         void insert(T puz);
+        int size(){return _siz;};
+        int nivel(){return _nivelActual;};
         void clear();
         virtual ~ArbolDeJuego();
     protected:
@@ -60,6 +62,7 @@ bool ArbolDeJuego<T>::desplegar(list<T>& camino){
             elegido = elegido->padre;
         }
         clear();
+        cout<<camino.size()<<endl;
         auto iter = camino.begin();
         iter++;
         _insert(*iter,camino.front());
@@ -75,7 +78,9 @@ bool ArbolDeJuego<T>::_desplegar(Nodo *& elegido, Nodo * actual){
     if(actual->nivel == _nivelActual){
         list<tuple<int,T>> hijos;
         T ele;
-        despleG(actual->puz,hijos,actual->padre->puz,valorIncorrecto);
+        T anterior;
+        if(actual->padre) anterior = actual->padre->puz;
+        despleG(actual->puz,hijos,anterior,valorIncorrecto);
         for(auto t : hijos){
             Nodo * nuevo = new Nodo(get<1>(t),get<0>(t),_nivelActual + 1);
             nuevo->padre = actual;
@@ -87,16 +92,18 @@ bool ArbolDeJuego<T>::_desplegar(Nodo *& elegido, Nodo * actual){
         }
         _siz += actual->hijos.size();
     }
-    for(Nodo * h : actual->hijos){
-        if(_desplegar(elegido,h))return true;
+    else{
+        for(Nodo * h : actual->hijos){
+            if(_desplegar(elegido,h))return true;
+        }
     }
-    if(actual == root) _nivelActual++;
+    if(actual == this->actual) _nivelActual++;
     return false;
 }
 
 template<typename T>
 void ArbolDeJuego<T>::clear(){
-    if(root) root->destruirme();
+    //if(root) root->destruirme();
     root = nullptr;
     _siz = 0;
     _nivelActual = -1;
@@ -111,6 +118,7 @@ void ArbolDeJuego<T>::insert(T puz){
         _nivelActual = 0;
         _siz++;
     }
+    cout<<"ggggg"<<endl;
 }
 
 template<typename T>

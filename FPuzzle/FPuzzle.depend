@@ -1,11 +1,11 @@
 # depslib dependency file v1.0
-1447464861 source:c:\users\chris\documents\fifteenpuzzle\fpuzzle\main.cpp
+1447520784 source:c:\users\chris\documents\fifteenpuzzle\fpuzzle\main.cpp
 	<iostream>
 	"time.h"
 	"stdlib.h"
 	"Puzzle.h"
 
-1447476297 c:\users\chris\documents\fifteenpuzzle\fpuzzle\include\puzzle.h
+1447526140 c:\users\chris\documents\fifteenpuzzle\fpuzzle\include\puzzle.h
 	"stdlib.h"
 	"list"
 	"algorithm"
@@ -15,7 +15,7 @@
 
 1447369005 source:c:\users\chris\documents\fifteenpuzzle\fpuzzle\src\puzzle.cpp
 
-1447476251 c:\users\chris\documents\fifteenpuzzle\fpuzzle\include\arboldejuego.h
+1447526410 c:\users\chris\documents\fifteenpuzzle\fpuzzle\include\arboldejuego.h
 	"list"
 	"tuple"
 
