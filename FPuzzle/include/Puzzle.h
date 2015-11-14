@@ -2,10 +2,18 @@
 #define PUZZLE_H
 #include "stdlib.h"
 #include "list"
+#include "algorithm"
+#include "vector"
+#include "map"
+#include "ArbolDeJuego.h"
 
 using namespace std;
 
 enum Posiciones{ARRIBAIZQUIERDA,ARRIBA,ARRIBADERECHA,DERECHA,ABAJODERECHA,ABAJO,ABAJOIZQUIERDA,IZQUIERDA,CENTRO};
+
+class Puzzle;
+
+void desple(Puzzle actual, list<tuple<int,Puzzle>>&resultado, Puzzle anterior, int valorIncorrecto);
 
 class Puzzle
 {
@@ -25,64 +33,114 @@ class Puzzle
         };
         Puzzle();
         Puzzle(int,string);
+        Puzzle(map<int,map<int,Square*>>,string,Square*,int);
         void next();
-
+        map<int,map<int,Square*>> getMatriz(){return matriz;};
+        void print();
+        int estaResuelto();
+        void Resolver();
+        Puzzle copiarPuzzle();
+        Square * getVacio();
+        int getValor(Square *);
+        void swapValores(Square *);
+        list<Square *> getVecinos(Square *,Square *);
+        Square * vacio;
         virtual ~Puzzle();
     protected:
     private:
         map<int,map<int,Square*>> matriz;
         string name;
         int getMejorSolucion(list<Square *>, Square *&);
-        list<Square *> getVecinos(Square *);
-        Square * vacio;
+
         int resuelto;
+        void nextPorPaso(list<Puzzle>&);
+        ArbolDeJuego<Puzzle> juego;
 };
 
-list<Puzzle::Square*> Puzzle::getVecinos(Square * s){
+
+
+Puzzle::Puzzle(map<int,map<int,Square*>> matriz,string name, Square * vacio, int resuelto){
+    this->matriz = matriz;
+    this->name = name;
+    this->vacio = vacio;
+    this->resuelto = resuelto;
+}
+
+void Puzzle::swapValores(Square * vecino){
+    swap(vacio->valor,vecino->valor);
+    swap(vacio->image,vecino->image);
+    vacio = vecino;
+}
+
+int Puzzle::getValor(Square * vecino){
+    if(vecino->getValorReal() == vecino->valor)return 1;
+    if(vacio->getValorReal() == vecino->valor)return -1;
+    return 0;
+}
+
+Puzzle::Square * Puzzle::getVacio(){
+    return vacio;
+}
+
+int Puzzle::estaResuelto(){
+    return resuelto;
+}
+
+void Puzzle::print(){
+    for(int i = 1; i <= matriz.size(); i++){
+        for(int j = 1; j <= matriz.size(); j++){
+            cout<<matriz[i][j]->valor<<" ";
+        }
+        cout<<endl;
+    }
+    cout<<endl;
+}
+
+list<Puzzle::Square*> Puzzle::getVecinos(Square * s, Square * anterior){
     int pos = s->getPosicion();
     list<Square *> vecinos;
     switch(pos){
         case ARRIBAIZQUIERDA:
-            vecinos.push_back(matriz[s->fil][s->col + 1]);
-            vecinos.push_back(matriz[s->fil + 1][s->col]);
+            if(matriz[s->fil][s->col + 1] != anterior) vecinos.push_back(matriz[s->fil][s->col + 1]);
+            if(matriz[s->fil + 1][s->col] != anterior) vecinos.push_back(matriz[s->fil + 1][s->col]);
             break;
         case ARRIBA:
-            vecinos.push_back(matriz[s->fil][s->col + 1]);
-            vecinos.push_back(matriz[s->fil][s->col - 1]);
-            vecinos.push_back(matriz[s->fil + 1][s->col]);
+            if(matriz[s->fil][s->col - 1] != anterior) vecinos.push_back(matriz[s->fil][s->col - 1]);
+            if(matriz[s->fil][s->col + 1] != anterior) vecinos.push_back(matriz[s->fil][s->col + 1]);
+            if(matriz[s->fil + 1][s->col] != anterior) vecinos.push_back(matriz[s->fil + 1][s->col]);
             break;
         case ARRIBADERECHA:
-            vecinos.push_back(matriz[s->fil][s->col - 1]);
-            vecinos.push_back(matriz[s->fil + 1][s->col]);
+            if(matriz[s->fil][s->col - 1] != anterior) vecinos.push_back(matriz[s->fil][s->col - 1]);
+            if(matriz[s->fil + 1][s->col] != anterior) vecinos.push_back(matriz[s->fil + 1][s->col]);
             break;
         case DERECHA:
-            vecinos.push_back(matriz[s->fil][s->col - 1]);
-            vecinos.push_back(matriz[s->fil + 1][s->col]);
-            vecinos.push_back(matriz[s->fil - 1][s->col]);
+            if(matriz[s->fil][s->col - 1] != anterior) vecinos.push_back(matriz[s->fil][s->col - 1]);
+            if(matriz[s->fil - 1][s->col] != anterior) vecinos.push_back(matriz[s->fil - 1][s->col]);
+            if(matriz[s->fil + 1][s->col] != anterior) vecinos.push_back(matriz[s->fil + 1][s->col]);
             break;
         case ABAJODERECHA:
-            vecinos.push_back(matriz[s->fil][s->col - 1]);
-            vecinos.push_back(matriz[s->fil - 1][s->col]);
+            if(matriz[s->fil][s->col - 1] != anterior) vecinos.push_back(matriz[s->fil][s->col - 1]);
+            if(matriz[s->fil - 1][s->col] != anterior) vecinos.push_back(matriz[s->fil - 1][s->col]);
             break;
         case ABAJO:
-            vecinos.push_back(matriz[s->fil][s->col + 1]);
-            vecinos.push_back(matriz[s->fil][s->col - 1]);
-            vecinos.push_back(matriz[s->fil - 1][s->col]);
+            if(matriz[s->fil][s->col - 1] != anterior) vecinos.push_back(matriz[s->fil][s->col - 1]);
+            if(matriz[s->fil - 1][s->col] != anterior) vecinos.push_back(matriz[s->fil - 1][s->col]);
+            if(matriz[s->fil][s->col + 1] != anterior) vecinos.push_back(matriz[s->fil][s->col + 1]);
             break;
         case ABAJOIZQUIERDA:
-            vecinos.push_back(matriz[s->fil][s->col + 1]);
-            vecinos.push_back(matriz[s->fil - 1][s->col]);
+            if(matriz[s->fil - 1][s->col] != anterior) vecinos.push_back(matriz[s->fil - 1][s->col]);
+            if(matriz[s->fil][s->col + 1] != anterior) vecinos.push_back(matriz[s->fil][s->col + 1]);
             break;
         case IZQUIERDA:
-            vecinos.push_back(matriz[s->fil][s->col + 1]);
-            vecinos.push_back(matriz[s->fil + 1][s->col]);
-            vecinos.push_back(matriz[s->fil - 1][s->col]);
+            if(matriz[s->fil - 1][s->col] != anterior) vecinos.push_back(matriz[s->fil - 1][s->col]);
+            if(matriz[s->fil][s->col + 1] != anterior) vecinos.push_back(matriz[s->fil][s->col + 1]);
+            if(matriz[s->fil + 1][s->col] != anterior) vecinos.push_back(matriz[s->fil + 1][s->col]);
             break;
         case CENTRO:
-            vecinos.push_back(matriz[s->fil][s->col + 1]);
-            vecinos.push_back(matriz[s->fil][s->col - 1]);
-            vecinos.push_back(matriz[s->fil + 1][s->col]);
-            vecinos.push_back(matriz[s->fil - 1][s->col]);
+            if(matriz[s->fil][s->col - 1] != anterior) vecinos.push_back(matriz[s->fil][s->col - 1]);
+            if(matriz[s->fil - 1][s->col] != anterior) vecinos.push_back(matriz[s->fil - 1][s->col]);
+            if(matriz[s->fil][s->col + 1] != anterior) vecinos.push_back(matriz[s->fil][s->col + 1]);
+            if(matriz[s->fil + 1][s->col] != anterior) vecinos.push_back(matriz[s->fil + 1][s->col]);
             break;
     }
     return vecinos;
@@ -95,7 +153,9 @@ int Puzzle::getMejorSolucion(list<Square *> vecinos, Square *& resultado){
             resultado = s;
             return -1;
         }
-        if(s->getValorReal() != s->valor and !temp) resultado = s;
+        if(s->getValorReal() != s->valor and !resultado){
+            resultado = s;
+        }
     }
     if(!resultado){
         resultado = vecinos.front();
@@ -104,16 +164,37 @@ int Puzzle::getMejorSolucion(list<Square *> vecinos, Square *& resultado){
     return 0;
 }
 
+void Puzzle::Resolver(){
+    print();
+    char t;
+    cin>>t;
+    while(resuelto){
+        next();
+    }
+}
+
+void Puzzle::nextPorPaso(list<Puzzle>& camino){
+    for(Puzzle p : camino){
+        matriz = p.getMatriz();
+        ///Lentearlo;
+        print();
+        char t;
+        cin>>t;
+    }
+}
+
 void Puzzle::next(){
-    Square * mejorS;
-    int varianza = getMejorSolucion(getVecinos(vacio),mejorS);
-
-
+    list<Puzzle> camino;
+    while(!juego.desplegar(camino)){
+        camino.clear();
+    }
+    nextPorPaso(camino);
+    resuelto--;
 }
 
 int Puzzle::Square::getPosicion(){
-    if(fil == 0){
-        if(col == 0){
+    if(fil == 1){
+        if(col == 1){
             return ARRIBAIZQUIERDA;
         }
         else if(col == n){
@@ -132,35 +213,46 @@ int Puzzle::Square::getPosicion(){
         }
     }
     else if(fil == n){
-        if(col == 0){
+        if(col == 1){
             return ABAJOIZQUIERDA;
         }
         else{
             return ABAJO;
         }
     }
-    else if(col == 0){
+    else if(col == 1){
         return IZQUIERDA;
     }
     else return CENTRO;
 }
 
 Puzzle::Puzzle(int n, string name){
+    void (*des)(Puzzle, list<tuple<int,Puzzle>>&, Puzzle, int);
+    des = desple;
+    juego = ArbolDeJuego<Puzzle>(-1,1,des);
     resuelto = 0;
     this->name = name;
+    vector<int> valores;
+    for(int i = 1; i <= n * n; i++){
+        valores.push_back(i);
+    }
     for(int i = 1; i <= n; i++){
+        if(valores.empty())break;
         for(int j = 1; j <= n; j++){
             ///FALTA PONER LA IMAGEN;
-            int numero = rand() % n + 1;
-            matriz[i][j]->_llenarValores(i,j,,n,name);
-            if(numero == n) vacio = matriz[i][j];
+            int h = rand() % valores.size();
+            int numero = valores[h];
+            matriz[i][j] = new Square(i,j,numero,n,name);
+            if(numero == n * n) vacio = matriz[i][j];
             if(numero != matriz[i][j]->getValorReal()) resuelto++;
+            valores.erase(valores.begin() + h);
         }
     }
+    juego.insert(Puzzle(matriz,name,vacio,resuelto));
 }
 
 Puzzle::Puzzle(){
-    name = nullptr;
+    name = "default";
 }
 
 int Puzzle::Square::getValorReal(){
@@ -172,14 +264,10 @@ void Puzzle::Square::_llenarValores(int fil, int col , int val, int n, string im
     this->col = col;
     this->n = n;
     valor = val;
-    image = img
+    image = img;
 }
 
 Puzzle::Square::Square(){
-    vecinos[IZQUIERDA] = nullptr;
-    vecinos[ARRIBA] = nullptr;
-    vecinos[DERECHA] = nullptr;
-    vecinos[ABAJO] = nullptr;
     image = nullptr;
     n = 0;
     fil = 0;
@@ -190,15 +278,33 @@ Puzzle::Square::Square(){
 
 
 Puzzle::Square::Square(int fil, int col, int val,int n, string img){
-    vecinos[IZQUIERDA] = nullptr;
-    vecinos[ARRIBA] = nullptr;
-    vecinos[DERECHA] = nullptr;
-    vecinos[ABAJO] = nullptr;
     this->fil = fil;
     this->col = col;
     this->n = n;
     valor = val;
     image = img;
 }
+
+Puzzle::~Puzzle(){
+    for(int i = 1; i <= matriz.size(); i++){
+        for(int j = 1; j <= matriz.size(); j++){
+            delete matriz[i][j];
+        }
+    }
+}
+
+void desple(Puzzle actual, list<tuple<int,Puzzle>>&resultado, Puzzle anterior, int valorIncorrecto){
+    list<Puzzle::Square *> vecinos = actual.getVecinos(actual.getVacio(),anterior.getVacio());
+    Puzzle temp = actual;
+    for(Puzzle::Square * s : vecinos){
+        actual = temp;
+        int valor = actual.getValor(s);
+        if(valor != valorIncorrecto){
+            actual.swapValores(s);
+            resultado.push_back(make_tuple(valor,actual));
+        }
+    }
+}
+
 
 #endif // PUZZLE_H

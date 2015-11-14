@@ -1,12 +1,13 @@
 #include <iostream>
 #include "time.h"
 #include "stdlib.h"
+#include "Puzzle.h"
 
 using namespace std;
 
 int main()
 {
     srand(time(NULL));
-    cout << "Hello world!" << endl;
-    return 0;
+    Puzzle puz(3,"puz");
+    puz.Resolver();
 }
