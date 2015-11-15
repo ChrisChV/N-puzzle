@@ -13,7 +13,7 @@ enum Posiciones{ARRIBAIZQUIERDA,ARRIBA,ARRIBADERECHA,DERECHA,ABAJODERECHA,ABAJO,
 
 class Puzzle;
 
-void desple(Puzzle actual, list<tuple<int,Puzzle>>&resultado, Puzzle anterior, int valorIncorrecto);
+void desple(Puzzle actual, list<tuple<int,Puzzle>>&resultado, Puzzle anterior, int valorIncorrecto,int valorActual);
 
 class Puzzle
 {
@@ -54,11 +54,11 @@ class Puzzle
         int vacioCol;
         virtual ~Puzzle();
         string name;
+        int resuelto;
     protected:
     private:
         map<int,map<int,Square>> matriz;
         ///int getMejorSolucion(list<Square *>, Square *&);
-        int resuelto;
         void nextPorPaso(list<Puzzle>&);
         ArbolDeJuego<Puzzle> juego;
 };
@@ -120,8 +120,8 @@ void Puzzle::print(){
 
 list<Puzzle::Square> Puzzle::getVecinos(int filS, int colS, int filAnterior, int colAnterior){
     Square s  = matriz[filS][colS];
-    cout<<"FIL->"<<s.fil<<endl;
-    cout<<"COL->"<<s.col<<endl;
+    //cout<<"FIL->"<<s.fil<<endl;
+    //cout<<"COL->"<<s.col<<endl;
     Square anterior;
     bool flag;
     if(filAnterior == -1 or colAnterior == -1)flag = false;
@@ -203,9 +203,11 @@ void Puzzle::Resolver(){
     cout<<"Nivel->"<<juego.nivel()<<endl;
     cout<<"Size->"<<juego.size()<<endl;
     print();
-    while(resuelto){
-        next();
+    list<Puzzle> camino;
+    while(!juego.desplegar(camino,resuelto)){
+        camino.clear();
     }
+    nextPorPaso(camino);
 }
 
 void Puzzle::nextPorPaso(list<Puzzle>& camino){
@@ -268,9 +270,9 @@ int Puzzle::Square::getPosicion(){
 }
 
 Puzzle::Puzzle(int **m,int n,string name){
-    void (*des)(Puzzle, list<tuple<int,Puzzle>>&, Puzzle, int);
+    void (*des)(Puzzle, list<tuple<int,Puzzle>>&, Puzzle, int,int);
     des = desple;
-    juego = ArbolDeJuego<Puzzle>(-1,1,des,n);
+    juego = ArbolDeJuego<Puzzle>(-1,1,des,n*n);
     this->name = name;
     resuelto = 0;
     for(int i = 0; i < n;i++){
@@ -284,14 +286,14 @@ Puzzle::Puzzle(int **m,int n,string name){
         }
     }
     Puzzle nuevo(matriz,name,vacioFil,vacioCol,resuelto);
-    juego.insert(nuevo);
+    juego.insert(nuevo,resuelto);
     cout<<"hola"<<endl;
 }
 
 Puzzle::Puzzle(int n, string name){
-    void (*des)(Puzzle, list<tuple<int,Puzzle>>&, Puzzle, int);
+    void (*des)(Puzzle, list<tuple<int,Puzzle>>&, Puzzle, int,int);
     des = desple;
-    juego = ArbolDeJuego<Puzzle>(-1,1,des,n);
+    juego = ArbolDeJuego<Puzzle>(-1,1,des,n*n);
     resuelto = 0;
     this->name = name;
     vector<int> valores;
@@ -314,7 +316,7 @@ Puzzle::Puzzle(int n, string name){
         }
     }
     Puzzle nuevo(matriz,name,vacioFil,vacioCol,resuelto);
-    juego.insert(nuevo);
+    juego.insert(nuevo,resuelto);
     cout<<"hola"<<endl;
 }
 
@@ -363,7 +365,7 @@ Puzzle::~Puzzle(){
 
 
 
-void desple(Puzzle actual, list<tuple<int,Puzzle>>&resultado, Puzzle anterior, int valorIncorrecto){
+void desple(Puzzle actual, list<tuple<int,Puzzle>>&resultado, Puzzle anterior, int valorIncorrecto, int valorActual){
     int filAnte;
     int colAnte;
     if(anterior.name == "default"){
@@ -376,18 +378,16 @@ void desple(Puzzle actual, list<tuple<int,Puzzle>>&resultado, Puzzle anterior, i
     }
     list<Puzzle::Square> vecinos = actual.getVecinos(actual.vacioFil,actual.vacioCol,filAnte,colAnte);
     Puzzle temp = actual;
-    cout<<"DESPLEGANDO"<<endl<<endl;
-    actual.print();
+    //cout<<"DESPLEGANDO"<<endl<<endl;
+    //actual.print();
     for(Puzzle::Square s : vecinos){
-        cout<<"VECINO->"<<s.valor<<endl;
+        //cout<<"VECINO->"<<s.valor<<endl;
         actual = temp;
-        int valor = actual.getValor(s.fil,s.col);
-        if(valor != valorIncorrecto){
+        int valor =  valorActual + actual.getValor(s.fil,s.col);
             actual.swapValores(s.fil,s.col);
-            cout<<"DESPLIEGUE"<<endl<<endl;
-            actual.print();
+            //cout<<"DESPLIEGUE"<<endl<<endl;
+            //actual.print();
             resultado.push_back(make_tuple(valor,actual));
-        }
     }
 }
 

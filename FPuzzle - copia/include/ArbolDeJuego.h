@@ -23,9 +23,9 @@ class ArbolDeJuego
                 void destruirme();
         };
         ArbolDeJuego();
-        ArbolDeJuego(int valorC,int, void (*despleG)(T,list<tuple<int,T>>&,T,int),int);
+        ArbolDeJuego(int valorC,int, void (*despleG)(T,list<tuple<int,T>>&,T,int,int),int);
         bool desplegar(list<T>&,int&);
-        void insert(T puz);
+        void insert(T puz,int valor);
         int size(){return _siz;};
         int nivel(){return _nivelActual;};
         void clear();
@@ -50,8 +50,9 @@ class ArbolDeJuego
         int _ordenDeEleccion;
         int bloqueados;
         int desbloqueosActuales;
+        list<Nodo *> ultimaFila;
         void _insert(T,T);
-        void (*despleG)(T,list<tuple<int,T>>&,T,int);
+        void (*despleG)(T,list<tuple<int,T>>&,T,int,int);
         bool _desplegar(Nodo *& elegido, Nodo * actual);
 
 };
@@ -69,6 +70,7 @@ template<typename T>
 bool ArbolDeJuego<T>::desplegar(list<T>& camino,int &resuelto){
     Nodo * elegido;
     _revisadosNivel = 0;
+    /*
     if(contadorDeBucle == 4){
         contadorDeBucle = 0;
         ordenDeEleccion++;
@@ -86,88 +88,55 @@ bool ArbolDeJuego<T>::desplegar(list<T>& camino,int &resuelto){
     else{
         valorIncorrecto = valorIncorrectoTemp;
     }
+    */
     bloqueados = 0;
     _revisadosNivel = 0;
     if(_desplegar(elegido,actual)){
-        while(elegido != actual){
+        while(elegido != this->actual){
             camino.push_back(elegido->puz);
             elegido = elegido->padre;
         }
-        cout<<camino.size()<<endl;
-        T anterior;
-        if(camino.size() != 1){
-            auto iter = camino.begin();
-            iter++;
-            anterior = *iter;
-        }
-        else{
-            anterior = actual->puz;
-        }
-        clear();
-        _insert(anterior,camino.front());
         camino.reverse();
-        if(resuelto == resuelto + (-1 + desbloqueosActuales)){
-            contadorDeBucle++;
-            cout<<"BUCLE+->"<<contadorDeBucle<<endl;
-        }
-        else{
-            contadorDeBucle = 0;
-            ordenDeEleccion = 1;
-        }
-        resuelto += (-1 + desbloqueosActuales);
-        if(resuelto < nMejor){
-            mejor = new Nodo(camino.front(),-1000,1);
-            anteriorMejor = new Nodo(anterior,-1000,0);
-        }
-        //ordenDeEleccion = 1;
-        _ordenDeEleccion = 1;
-        desbloqueosActuales = 0;
         return true;
-    }
-    else{
-        if(bloqueados == _revisadosNivel){
-            bloqueado = true;
-        }
     }
     return false;
 }
 
 template<typename T>
 bool ArbolDeJuego<T>::_desplegar(Nodo *& elegido, Nodo * actual){
-    if(!actual)return false;
-    if(actual->nivel == _nivelActual){
+    list<Nodo *> temp;
+    cout<<"NIVELACTUAL->"<<_nivelActual<<endl;
+    cout<<"MENOR->"<<nMejor<<endl;
+    for(Nodo * actual : ultimaFila){
+
         list<tuple<int,T>> hijos;
         T ele;
         T anterior;
         if(actual->padre) anterior = actual->padre->puz;
-        despleG(actual->puz,hijos,anterior,valorIncorrecto);
+        despleG(actual->puz,hijos,anterior,valorIncorrecto,actual->valor);
         _revisadosNivel++;
-        cout<<"SIZE->"<<hijos.size()<<endl;
+        //cout<<"SIZE->"<<hijos.size()<<endl;
         if(hijos.empty()){
             bloqueados++;
         }
         for(auto t : hijos){
             Nodo * nuevo = new Nodo(get<1>(t),get<0>(t),_nivelActual + 1);
+            //cout<<"RESULTADO->"<<nuevo->valor<<endl;
+            temp.push_back(nuevo);
             nuevo->padre = actual;
             actual->hijos.push_back(nuevo);
-            if(nuevo->valor == valorCorrecto){
-                _ordenDeEleccion--;
-                cout<<"_OOOOO->"<<_ordenDeEleccion<<endl;
-                cout<<"OOOOOO->"<<ordenDeEleccion<<endl;
-                if(_ordenDeEleccion == 0){
-                    elegido = nuevo;
-                    return true;
-                }
+            if(nMejor > nuevo->valor){
+                nMejor = nuevo->valor;
+            }
+            if(nuevo->valor == 1){
+                elegido = nuevo;
+                return true;
             }
         }
         _siz += actual->hijos.size();
     }
-    else{
-        for(Nodo * h : actual->hijos){
-            if(_desplegar(elegido,h))return true;
-        }
-    }
-    if(actual == this->actual) _nivelActual++;
+    _nivelActual++;
+    ultimaFila = temp;
     return false;
 }
 
@@ -181,9 +150,10 @@ void ArbolDeJuego<T>::clear(){
 }
 
 template<typename T>
-void ArbolDeJuego<T>::insert(T puz){
+void ArbolDeJuego<T>::insert(T puz,int valor){
     if(!root){
-        Nodo * nuevo = new Nodo(puz,-1000,0);
+        Nodo * nuevo = new Nodo(puz,valor,0);
+        ultimaFila.push_back(nuevo);
         root = nuevo;
         actual = nuevo;
         _nivelActual = 0;
@@ -201,7 +171,7 @@ void ArbolDeJuego<T>::Nodo::destruirme(){
 }
 
 template<typename T>
-ArbolDeJuego<T>::ArbolDeJuego(int valorC,int valorI, void (*despleG)(T,list<tuple<int,T>>&,T,int),int n){
+ArbolDeJuego<T>::ArbolDeJuego(int valorC,int valorI, void (*despleG)(T,list<tuple<int,T>>&,T,int,int),int n){
     root = nullptr;
     bloqueado = false;
     entroEnBucle = false;
