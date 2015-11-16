@@ -47,13 +47,13 @@
 
 1447634584 source:/home/chris/Documentos/fifteenpuzzle/FPuzzle - copia/src/Puzzle.cpp
 
-1447650320 source:/home/chris/Documentos/fifteenpuzzle/FPuzzle - copia/main.cpp
+1447643109 source:/home/chris/Documentos/fifteenpuzzle/FPuzzle - copia/main.cpp
 	<iostream>
 	"time.h"
 	"stdlib.h"
 	"Puzzle.h"
 
-1447650306 /home/chris/Documentos/fifteenpuzzle/FPuzzle - copia/include/Puzzle.h
+1447641269 /home/chris/Documentos/fifteenpuzzle/FPuzzle - copia/include/Puzzle.h
 	"stdlib.h"
 	"list"
 	"algorithm"
@@ -61,7 +61,43 @@
 	"map"
 	"ArbolDeJuego.h"
 
-1447650525 /home/chris/Documentos/fifteenpuzzle/FPuzzle - copia/include/ArbolDeJuego.h
+1447634584 /home/chris/Documentos/fifteenpuzzle/FPuzzle - copia/include/ArbolDeJuego.h
 	"list"
 	"tuple"
+
+1447653937 source:/home/chris/Documentos/fifteenpuzzle/FPuzzleCopia3/main.cpp
+	<iostream>
+	"time.h"
+	"stdlib.h"
+	"Puzzle.h"
+
+1447654163 /home/chris/Documentos/fifteenpuzzle/FPuzzleCopia3/include/Puzzle.h
+	"stdlib.h"
+	"list"
+	"algorithm"
+	"vector"
+	"map"
+	"ArbolDeJuego.h"
+
+1447654355 /home/chris/Documentos/fifteenpuzzle/FPuzzleCopia3/include/ArbolDeJuego.h
+	"list"
+	"tuple"
+	"FibonacciHeap.h"
+	"vector"
+	"Monticulo.h"
+
+1447651229 /home/chris/Documentos/fifteenpuzzle/FPuzzleCopia3/include/FibonacciHeap.h
+	"list"
+	"map"
+	"fstream"
+	"iostream"
+
+1447644438 source:/home/chris/Documentos/fifteenpuzzle/FPuzzleCopia3/src/ArbolDeJuego.cpp
+
+1447644438 source:/home/chris/Documentos/fifteenpuzzle/FPuzzleCopia3/src/Puzzle.cpp
+
+1447653822 /home/chris/Documentos/fifteenpuzzle/FPuzzleCopia3/include/Monticulo.h
+	"vector"
+	"algorithm"
+	"fstream"
 

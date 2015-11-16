@@ -36,6 +36,7 @@
 		</Compiler>
 		<Unit filename="include/ArbolDeJuego.h" />
 		<Unit filename="include/FibonacciHeap.h" />
+		<Unit filename="include/Monticulo.h" />
 		<Unit filename="include/Puzzle.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/ArbolDeJuego.cpp" />

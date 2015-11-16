@@ -15,6 +15,8 @@ class Puzzle;
 
 void desple(Puzzle actual, list<tuple<int,Puzzle>>&resultado, Puzzle anterior, int valorIncorrecto,int valorActual);
 
+
+
 class Puzzle
 {
     public:
@@ -49,6 +51,23 @@ class Puzzle
             }
             return true;
         };
+        bool operator!=(Puzzle second){
+            //cout<<"hhhh"<<endl;
+            for(int i = 1; i <= matriz.size(); i++){
+                for(int j = 1; j <= matriz.size(); j++){
+                    if(matriz[i][j].valor != second.matriz[i][j].valor)return true;
+                }
+            }
+            return false;
+        };
+        bool operator<(Puzzle second){
+            if(resuelto < second.resuelto)return true;
+            return false;
+        }
+        bool operator>(Puzzle second){
+            if(resuelto < second.resuelto)return true;
+            return false;
+        }
         void next();
         map<int,map<int,Square>> getMatriz(){return matriz;};
         void print();
@@ -468,10 +487,12 @@ void desple(Puzzle actual, list<tuple<int,Puzzle>>&resultado, Puzzle anterior, i
         //cout<<"VECINO->"<<s.valor<<endl;
         actual = temp;
         int valor =  valorActual + actual.getValor(s.fil,s.col);
+            if(actual.getValor(s.fil,s.col) != valorActual){
             actual.swapValores(s.fil,s.col);
             //cout<<"DESPLIEGUE"<<endl<<endl;
             //actual.print();
             resultado.push_back(make_tuple(valor,actual));
+        }
     }
 }
 
