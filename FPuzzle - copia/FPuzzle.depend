@@ -21,13 +21,13 @@
 
 1447465318 source:c:\users\chris\documents\fifteenpuzzle\fpuzzle\src\arboldejuego.cpp
 
-1447559245 source:c:\users\chris\documents\fifteenpuzzle\fpuzzle - copia\main.cpp
+1447627923 source:c:\users\chris\documents\fifteenpuzzle\fpuzzle - copia\main.cpp
 	<iostream>
 	"time.h"
 	"stdlib.h"
 	"Puzzle.h"
 
-1447556423 c:\users\chris\documents\fifteenpuzzle\fpuzzle - copia\include\puzzle.h
+1447620750 c:\users\chris\documents\fifteenpuzzle\fpuzzle - copia\include\puzzle.h
 	"stdlib.h"
 	"list"
 	"algorithm"

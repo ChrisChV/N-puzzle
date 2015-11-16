@@ -45,6 +45,7 @@ class Puzzle
         void print();
         int estaResuelto();
         void Resolver();
+        void ResolverUsuario();
         Puzzle copiarPuzzle();
         tuple<int,int> getVacio();
         int getValor(int,int);
@@ -63,6 +64,79 @@ class Puzzle
         ArbolDeJuego<Puzzle> juego;
 };
 
+void Puzzle::ResolverUsuario(){
+    cout<<"COMANDOS:"<<endl;
+    cout<<"a  mover el vacio para izquierda"<<endl;
+    cout<<"w  mover el vacio para arriba"<<endl;
+    cout<<"d  mover el vacio para derecha"<<endl;
+    cout<<"s  mover el vacio para abajo"<<endl;
+    cout<<"m  guardar el actual en memoria"<<endl;
+    cout<<"r  regresar al que esta en memoria"<<endl;
+    map<int,map<int,Square>> memoria = matriz;
+    int mFil = vacioFil;
+    int mCol = vacioCol;
+    int mResuleto = resuelto;
+    while(resuelto != 1){
+        print();
+        char t;
+        cin>>t;
+        int pos = matriz[vacioFil][vacioCol].getPosicion();
+        switch(t){
+            case 'a':
+                if(pos == IZQUIERDA or pos == ARRIBAIZQUIERDA or pos == ABAJOIZQUIERDA){
+                    cout<<"No puedes moverte para la Izquierda"<<endl;
+                    break;
+                }
+                resuelto += getValor(vacioFil,vacioCol -1);
+                swapValores(vacioFil,vacioCol - 1);
+
+                break;
+            case 'w':
+                if(pos == ARRIBA or pos == ARRIBADERECHA or pos == ARRIBAIZQUIERDA){
+                    cout<<"No puedes moverte para Arriba"<<endl;
+                    break;
+                }
+                resuelto += getValor(vacioFil - 1, vacioCol);
+                swapValores(vacioFil - 1, vacioCol);
+                break;
+            case 'd':
+                if(pos == DERECHA or pos == ARRIBADERECHA or pos == ABAJODERECHA){
+                    cout<<"No puedes moverte para Derecha"<<endl;
+                    break;
+                }
+                resuelto += getValor(vacioFil, vacioCol + 1);
+                swapValores(vacioFil, vacioCol + 1);
+                break;
+            case 's':
+                if(pos == ABAJO or pos == ABAJODERECHA or pos == ABAJOIZQUIERDA){
+                    cout<<"No puedes moverte para ABAJO"<<endl;
+                    break;
+                }
+                resuelto += getValor(vacioFil + 1, vacioCol);
+                swapValores(vacioFil + 1, vacioCol);
+                break;
+            case 'm':
+                cout<<"GUARDADO"<<endl;
+                memoria = matriz;
+                mFil = vacioFil;
+                mCol = vacioCol;
+                mResuleto = resuelto;
+                break;
+            case 'r':
+                cout<<"REGRESANDO"<<endl;
+                matriz = memoria;
+                vacioFil = mFil;
+                vacioCol = mCol;
+                resuelto = mResuleto;
+                break;
+            default:
+                cout<<"Escriba uno de los comandos a,w,s o d"<<endl;
+                break;
+        }
+    }
+    cout<<"BUENA, LO RESOLVISTE"<<endl;
+    print();
+}
 
 Puzzle::Puzzle(map<int,map<int,Square>> matriz,string name, int fil,int col, int resuelto){
     this->matriz = matriz;

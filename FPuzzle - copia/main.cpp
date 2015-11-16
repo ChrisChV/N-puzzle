@@ -8,16 +8,18 @@ using namespace std;
 int main()
 {
     srand(time(NULL));
+    int n = 4;
     int ** m;
-    m = new int *[3];
-    for(int i = 0; i < 3; i++){
-        m[i] = new int[3];
+    m = new int *[n];
+    for(int i = 0; i < n; i++){
+        m[i] = new int[n];
     }
-    for(int i = 0; i < 3; i++){
-        for(int j = 0; j < 3; j++){
+    for(int i = 0; i < n; i++){
+        for(int j = 0; j < n; j++){
             cin>>m[i][j];
         }
     }
-    Puzzle puz(m,3,"puz");
+
+    Puzzle puz(m,n,"puz");
     puz.Resolver();
 }
