@@ -1,0 +1,32 @@
+# depslib dependency file v1.0
+1447834940 source:/home/chris/Documentos/fifteenpuzzle/FPuzzleCopia4/main.cpp
+	<iostream>
+	"time.h"
+	"stdlib.h"
+	"Puzzle.h"
+
+1447835378 /home/chris/Documentos/fifteenpuzzle/FPuzzleCopia4/include/Puzzle.h
+	"stdlib.h"
+	"list"
+	"algorithm"
+	"vector"
+	"map"
+	"ArbolDeJuego.h"
+	<allegro.h>
+	"math.h"
+
+1447835236 /home/chris/Documentos/fifteenpuzzle/FPuzzleCopia4/include/ArbolDeJuego.h
+	"list"
+	"tuple"
+	"FibonacciHeap.h"
+
+1447828976 /home/chris/Documentos/fifteenpuzzle/FPuzzleCopia4/include/FibonacciHeap.h
+	"list"
+	"map"
+	"fstream"
+	"iostream"
+
+1447802467 source:/home/chris/Documentos/fifteenpuzzle/FPuzzleCopia4/src/ArbolDeJuego.cpp
+
+1447802467 source:/home/chris/Documentos/fifteenpuzzle/FPuzzleCopia4/src/Puzzle.cpp
+

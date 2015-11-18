@@ -13,7 +13,7 @@ enum Posiciones{ARRIBAIZQUIERDA,ARRIBA,ARRIBADERECHA,DERECHA,ABAJODERECHA,ABAJO,
 
 class Puzzle;
 
-void desple(Puzzle actual, list<tuple<int,Puzzle>>&resultado, Puzzle anterior, int valorIncorrecto,int valorActual);
+void desple(Puzzle actual, list<tuple<int,Puzzle>>&resultado, Puzzle anterior, int valorIncorrecto,int valorActual,bool flag);
 
 
 
@@ -372,7 +372,7 @@ int Puzzle::Square::getPosicion(){
 }
 
 Puzzle::Puzzle(int **m,int n,string name){
-    void (*des)(Puzzle, list<tuple<int,Puzzle>>&, Puzzle, int,int);
+    void (*des)(Puzzle, list<tuple<int,Puzzle>>&, Puzzle, int,int,bool);
     des = desple;
     juego = ArbolDeJuego<Puzzle>(-1,1,des,n*n);
     this->name = name;
@@ -393,7 +393,7 @@ Puzzle::Puzzle(int **m,int n,string name){
 }
 
 Puzzle::Puzzle(int n, string name){
-    void (*des)(Puzzle, list<tuple<int,Puzzle>>&, Puzzle, int,int);
+    void (*des)(Puzzle, list<tuple<int,Puzzle>>&, Puzzle, int,int,bool);
     des = desple;
     juego = ArbolDeJuego<Puzzle>(-1,1,des,n*n);
     resuelto = 0;
@@ -467,10 +467,10 @@ Puzzle::~Puzzle(){
 
 
 
-void desple(Puzzle actual, list<tuple<int,Puzzle>>&resultado, Puzzle anterior, int valorIncorrecto, int valorActual){
+void desple(Puzzle actual, list<tuple<int,Puzzle>>&resultado, Puzzle anterior, int valorIncorrecto, int valorActual,bool flag){
     int filAnte;
     int colAnte;
-    if(anterior.name == "default"){
+    if(!flag){
         filAnte = -1;
         colAnte = -1;
     }
@@ -479,6 +479,7 @@ void desple(Puzzle actual, list<tuple<int,Puzzle>>&resultado, Puzzle anterior, i
         colAnte = anterior.vacioCol;
     }
     list<Puzzle::Square> vecinos = actual.getVecinos(actual.vacioFil,actual.vacioCol,filAnte,colAnte);
+
     Puzzle temp = actual;
     //cout<<"DESPLEGANDO"<<endl<<endl;
     //actual.print();

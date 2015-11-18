@@ -49,8 +49,6 @@ int main()
     puz.dibujar();
     puz.Resolver();
 
-
-
     //readkey();
 
     destroy_bitmap(buffer);

@@ -47,21 +47,22 @@
 
 1447634584 source:/home/chris/Documentos/fifteenpuzzle/FPuzzle - copia/src/Puzzle.cpp
 
-1447650320 source:/home/chris/Documentos/fifteenpuzzle/FPuzzle - copia/main.cpp
+1447802410 source:/home/chris/Documentos/fifteenpuzzle/FPuzzle - copia/main.cpp
 	<iostream>
 	"time.h"
 	"stdlib.h"
 	"Puzzle.h"
 
-1447650306 /home/chris/Documentos/fifteenpuzzle/FPuzzle - copia/include/Puzzle.h
+1447801934 /home/chris/Documentos/fifteenpuzzle/FPuzzle - copia/include/Puzzle.h
 	"stdlib.h"
 	"list"
 	"algorithm"
 	"vector"
 	"map"
 	"ArbolDeJuego.h"
+	<allegro.h>
 
-1447650525 /home/chris/Documentos/fifteenpuzzle/FPuzzle - copia/include/ArbolDeJuego.h
+1447799814 /home/chris/Documentos/fifteenpuzzle/FPuzzle - copia/include/ArbolDeJuego.h
 	"list"
 	"tuple"
 

@@ -65,13 +65,13 @@
 	"list"
 	"tuple"
 
-1447653937 source:/home/chris/Documentos/fifteenpuzzle/FPuzzleCopia3/main.cpp
+1447799760 source:/home/chris/Documentos/fifteenpuzzle/FPuzzleCopia3/main.cpp
 	<iostream>
 	"time.h"
 	"stdlib.h"
 	"Puzzle.h"
 
-1447654163 /home/chris/Documentos/fifteenpuzzle/FPuzzleCopia3/include/Puzzle.h
+1447828133 /home/chris/Documentos/fifteenpuzzle/FPuzzleCopia3/include/Puzzle.h
 	"stdlib.h"
 	"list"
 	"algorithm"
@@ -79,7 +79,7 @@
 	"map"
 	"ArbolDeJuego.h"
 
-1447654355 /home/chris/Documentos/fifteenpuzzle/FPuzzleCopia3/include/ArbolDeJuego.h
+1447828166 /home/chris/Documentos/fifteenpuzzle/FPuzzleCopia3/include/ArbolDeJuego.h
 	"list"
 	"tuple"
 	"FibonacciHeap.h"

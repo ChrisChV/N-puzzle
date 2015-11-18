@@ -49,7 +49,7 @@ class ArbolDeJuego
                 Nodo * nodo;
         };
         ArbolDeJuego();
-        ArbolDeJuego(int valorC,int, void (*despleG)(T,list<tuple<int,T>>&,T,int,int),int);
+        ArbolDeJuego(int valorC,int, void (*despleG)(T,list<tuple<int,T>>&,T,int,int,bool),int);
         bool desplegar(list<T>&,int&);
         void insert(T puz,int valor);
         int size(){return _siz;};
@@ -83,7 +83,7 @@ class ArbolDeJuego
         list<Nodo *> ultimaFila;
         vector<NodoDTO> heap;
         void _insert(T,T);
-        void (*despleG)(T,list<tuple<int,T>>&,T,int,int);
+        void (*despleG)(T,list<tuple<int,T>>&,T,int,int,bool);
         bool _desplegar(Nodo *& elegido, Nodo * actual);
 
 };
@@ -148,6 +148,7 @@ template<typename T>
 bool ArbolDeJuego<T>::_desplegar(Nodo *& elegido, Nodo * actual){
     //list<Nodo *> temp;
     cout<<"SIZE1->"<<heap.size()<<endl;
+    if(heap.empty())cout<<"vacio"<<endl;
     actual = getMin(heap).nodo;
     deleteMin(heap);
     cout<<"SIZE2->"<<heap.size()<<endl;
@@ -157,8 +158,12 @@ bool ArbolDeJuego<T>::_desplegar(Nodo *& elegido, Nodo * actual){
         list<tuple<int,T>> hijos;
         T ele;
         T anterior;
-        if(actual->padre) anterior = actual->padre->puz;
-        despleG(actual->puz,hijos,anterior,valorIncorrecto,actual->valor);
+        bool flag = true;
+        if(actual->padre){
+            anterior = actual->padre->puz;
+            flag = false;
+        }
+        despleG(actual->puz,hijos,anterior,valorIncorrecto,actual->valor,flag);
         operaciones++;
         _revisadosNivel++;
         //cout<<"SIZE->"<<hijos.size()<<endl;
@@ -222,7 +227,7 @@ void ArbolDeJuego<T>::Nodo::destruirme(){
 }
 
 template<typename T>
-ArbolDeJuego<T>::ArbolDeJuego(int valorC,int valorI, void (*despleG)(T,list<tuple<int,T>>&,T,int,int),int n){
+ArbolDeJuego<T>::ArbolDeJuego(int valorC,int valorI, void (*despleG)(T,list<tuple<int,T>>&,T,int,int,bool),int n){
     root = nullptr;
     bloqueado = false;
     entroEnBucle = false;
