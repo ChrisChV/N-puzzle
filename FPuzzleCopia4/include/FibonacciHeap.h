@@ -276,9 +276,9 @@ FibonacciHeap<T>::FibonacciHeap(){
 
 template <typename T>
 FibonacciHeap<T>::~FibonacciHeap(){
-    for(auto iter = roots.begin(); iter != roots.end(); ++iter){
-        (*iter)->destruirme();
-    }
+    //for(auto iter = roots.begin(); iter != roots.end(); ++iter){
+      //  (*iter)->destruirme();
+    //}
 }
 
 #endif // FIBONACCIHEAP_H

@@ -3,6 +3,7 @@
 #include "list"
 #include "tuple"
 #include "FibonacciHeap.h"
+#include "Monticulo.h"
 
 #define NOHAYINCORRECTO 1000;
 
@@ -22,6 +23,8 @@ class ArbolDeJuego
                 int nivel;
                 int cod;
                 void destruirme();
+                bool marcado;
+                bool search(Nodo * , Nodo *&);
         };
         class NodoDTO{
             public:
@@ -51,7 +54,8 @@ class ArbolDeJuego
         void insert(T puz,int valor);
         int size(){return _siz;};
         int nivel(){return _nivelActual;};
-        bool haceBucle(Nodo * nodo);
+        bool search(Nodo *, Nodo *&);
+        bool haceBucle(Nodo * nodo,Nodo *&);
         void (*print)(T);
         void clear();
         virtual ~ArbolDeJuego();
@@ -82,12 +86,32 @@ class ArbolDeJuego
         void _insert(T,T);
         void (*despleG)(T,std::list<std::tuple<int,T>>&,T,int,int,bool);
         int _desplegar(Nodo *& elegido);
-
 };
 
 template<typename T>
-bool ArbolDeJuego<T>::haceBucle(Nodo * nodo){
-    Nodo * padre = nodo->padre;
+bool ArbolDeJuego<T>::search(Nodo * n,Nodo *& nodo){
+    if(root){
+        return root->search(n,nodo);
+    }
+    return false;
+}
+
+template<typename T>
+bool ArbolDeJuego<T>::Nodo::search(Nodo * n, Nodo *& nodo){
+    if(this->puz == n->puz and this != n){
+        nodo = this;
+        return true;
+    }
+    for(Nodo * n2 : this->hijos){
+        if(n2->search(n,nodo))return true;
+    }
+    return false;
+}
+
+
+template<typename T>
+bool ArbolDeJuego<T>::haceBucle(Nodo * nodo, Nodo *& padre){
+    padre = nodo->padre;
     while(padre){
         if(nodo->puz == padre->puz)return true;
         padre = padre->padre;
@@ -152,16 +176,18 @@ int ArbolDeJuego<T>::_desplegar(Nodo *& elegido){
             return -1;
         }
         Nodo * actual = heap.popMin().nodo;
+        if(actual->marcado == true)return false;
         std::cout<<"NIVELACTUAL->"<<actual->nivel<<std::endl;
         std::cout<<"MENOR->"<<actual->valor<<std::endl;
-        std::cout<<"ACTUAL->"<<std::endl;
+        std::cout<<"COD->"<<actual->cod<<std::endl;
+        //std::cout<<"ACTUAL->"<<std::endl;
         //print(actual->puz);
         //char t;
         //std::cin>>t;
         std::list<std::tuple<int,T>> hijos;
         T ele;
         T anterior;
-        std::cout<<"NIVEL->"<<actual->nivel<<std::endl;
+        //std::cout<<"NIVEL->"<<actual->nivel<<std::endl;
         bool flag = false;
         if(actual->padre){
             anterior = actual->padre->puz;
@@ -175,10 +201,9 @@ int ArbolDeJuego<T>::_desplegar(Nodo *& elegido){
         }
         std::list<Nodo *>temp;
         for(auto t : hijos){
-            Nodo * nuevo = new Nodo(std::get<1>(t),std::get<0>(t), actual->nivel + 1);
-            ///std::cout<<"HIJO->"<<nuevo->valor<<std::endl;
-
-            //print(nuevo->puz);
+            Nodo * nuevo = new Nodo(std::get<1>(t),std::get<0>(t) + actual->nivel + 1, actual->nivel + 1);
+            std::cout<<"HIJO->"<<nuevo->valor<<std::endl;
+            print(nuevo->puz);
             //char s;
             //std::cin>>s;
             nuevo->cod = codActual;
@@ -186,7 +211,10 @@ int ArbolDeJuego<T>::_desplegar(Nodo *& elegido){
             //cout<<"RESULTADO->"<<nuevo->valor<<endl;
             nuevo->padre = actual;
             actual->hijos.push_back(nuevo);
-            if(!haceBucle(nuevo)){
+            Nodo * s;
+            if(!search(nuevo,s)){
+                heap.insert(NodoDTO(nuevo));
+                /*
                 if(temp.empty() or temp.front()->valor > nuevo->valor){
                     temp.clear();
                     temp.push_back(nuevo);
@@ -194,16 +222,20 @@ int ArbolDeJuego<T>::_desplegar(Nodo *& elegido){
                 else if(temp.front()->valor == nuevo->valor){
                     temp.push_back(nuevo);
                 }
-                if(nuevo->valor == 0){
+                */
+                if(nuevo->valor == nuevo->nivel){
                     elegido = nuevo;
                     return true;
                 }
             }
-
+            else{
+               // s->marcado = true;
+                nuevo->marcado = true;
+            }
         }
-        for(Nodo * n : temp){
-            heap.insert(NodoDTO(n));
-        }
+        //for(Nodo * n : temp){
+          //  heap.insert(NodoDTO(n));
+        //}
 
         _siz += actual->hijos.size();
     ///_nivelActual++;
@@ -285,6 +317,7 @@ ArbolDeJuego<T>::Nodo::Nodo(){
     valor = -10000;
     nivel = 0;
     padre = nullptr;
+    marcado = false;
 }
 
 template<typename T>
@@ -298,6 +331,7 @@ ArbolDeJuego<T>::Nodo::Nodo(T p, int valor, int nivel){
     this->valor = valor;
     this->nivel = nivel;
     padre = nullptr;
+    marcado = false;
 }
 
 #endif // ARBOLDEJUEGO_H

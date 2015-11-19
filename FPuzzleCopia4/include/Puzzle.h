@@ -61,6 +61,7 @@ class Puzzle
         Puzzle(int**,int,std::string,BITMAP *,std::string);//;
         Puzzle(std::map<int,Square>,std::string,int,int,BITMAP * buffer,BITMAP *,int);///
         Puzzle(std::map<int,Square>, std::map<int,Square>& goal, int,int);
+        void copiarM(std::map<int,Square>);
         void destruir();///
         bool operator==(Puzzle second){
             //cout<<"fffff"<<endl;
@@ -80,6 +81,7 @@ class Puzzle
         int vacio;
         BITMAP * image;
         BITMAP * buffer;
+        void copiarPuzzle(Puzzle &);
         std::list<Puzzle>::iterator actual;
         void dibujar();
         std::map<int,Square> goal;
@@ -96,6 +98,99 @@ class Puzzle
         void nextPorPaso(std::list<Puzzle>&);
         ArbolDeJuego<Puzzle> juego;
 };
+
+void Puzzle::copiarM(std::map<int,Square> mTemp){
+    for(int i = 1; i <= matriz.size(); i ++){
+        Square nuevo = matriz[i];
+        nuevo.col = mTemp[i].col;
+        nuevo.fil = mTemp[i].fil;
+        nuevo.X = mTemp[i].X;
+        nuevo.Y = mTemp[i].Y;
+        matriz[i] = nuevo;
+    }
+}
+
+void Puzzle::copiarPuzzle(Puzzle &nuevo){
+    nuevo.distanciaManhatan = this->distanciaManhatan;
+        nuevo.goal = this->goal;
+        nuevo.vacio = this->vacio;
+        Square s = this->matriz[vacio];
+        std::vector<std::vector<Puzzle::Square *>> vec;
+        for(int i = 0; i < s.n; i++){
+            std::vector<Square*> v;
+            for(int j = 0; j < s.n; j++){
+                v.push_back(nullptr);
+            }
+            vec.push_back(v);
+        }
+        for(int i = 1; i <= s.n * s.n; i++){
+            ///std::cout<<i<<std::endl;
+            Square nS;
+            nS.fil = this->matriz[i].fil;
+            nS.col = this->matriz[i].col;
+            nS.valor = i;
+            nS.n = s.n;
+            nS.X = this->matriz[i].X;
+            nS.Y = this->matriz[i].Y;
+            //nS.imagen = this->matriz[i].imagen;
+            nS.distanciaM = this->matriz[i].distanciaM;
+            nuevo.matriz[i] = nS;
+            vec[nS.fil - 1][nS.col - 1] = &(nuevo.matriz[i]);
+        }
+        for(int i = 0; i < vec.size(); i++){
+            for(int j = 0; j < vec.size(); j++){
+                Square * s = vec[i][j];
+                if(s == nullptr){
+                    std::cout<<"AAAAAAAAAAAAAAA"<<std::endl;
+                }
+                int pos = s->getPosicion();
+                switch(pos){
+                    case ARRIBAIZQUIERDA:
+                        s->vecinos[DERECHA] = vec[i][j + 1];
+                        s->vecinos[ABAJO] = vec[i + 1][j];
+                        break;
+                    case ARRIBA:
+                        s->vecinos[IZQUIERDA] = vec[i][j - 1];
+                        s->vecinos[DERECHA] = vec[i][j + 1];
+                        s->vecinos[ABAJO] = vec[i + 1][j];
+                        break;
+                    case ARRIBADERECHA:
+                        s->vecinos[IZQUIERDA] = vec[i][j - 1];
+                        s->vecinos[ABAJO] = vec[i + 1][j];
+                        break;
+                    case DERECHA:
+                        s->vecinos[IZQUIERDA] = vec[i][j - 1];
+                        s->vecinos[ARRIBA] = vec[i - 1][j];
+                        s->vecinos[ABAJO] = vec[i + 1][j];
+                        break;
+                    case ABAJODERECHA:
+                        s->vecinos[IZQUIERDA] = vec[i][j - 1];
+                        s->vecinos[ARRIBA] = vec[i - 1][j];
+                        break;
+                    case ABAJO:
+                        s->vecinos[IZQUIERDA] = vec[i][j - 1];
+                        s->vecinos[ARRIBA] = vec[i - 1][j];
+                        s->vecinos[DERECHA] = vec[i][j + 1];
+                        break;
+                    case ABAJOIZQUIERDA:
+                        s->vecinos[ARRIBA] = vec[i - 1][j];
+                        s->vecinos[DERECHA] = vec[i][j + 1];
+                        break;
+                    case IZQUIERDA:
+                        s->vecinos[ARRIBA] = vec[i - 1][j];
+                        s->vecinos[DERECHA] = vec[i][j + 1];
+                        s->vecinos[ABAJO] = vec[i + 1][j];
+                        break;
+                    case CENTRO:
+                        s->vecinos[IZQUIERDA] = vec[i][j - 1];
+                        s->vecinos[ARRIBA] = vec[i - 1][j];
+                        s->vecinos[DERECHA] = vec[i][j + 1];
+                        s->vecinos[ABAJO] = vec[i + 1][j];
+                        break;
+                }
+            }
+        }
+}
 
 void Puzzle::distanciaM(){
     for(int i = 1; i <= matriz.size(); i++){
@@ -440,6 +535,7 @@ void Puzzle::Resolver(){
     if(t != -1){
         camino.push_front(Puzzle(matriz,goal,vacio, distanciaManhatan));
         actual = camino.begin();
+        std::cout<<"LARGO DE CAMINO->"<<camino.size()<<std::endl;
         nextPorPaso(camino);
     }
 }
@@ -451,7 +547,6 @@ void Puzzle::nextPorPaso(std::list<Puzzle>& camino){
     while(actual != i){
         next();
     }
-
 }
 
 void Puzzle::next(){
@@ -463,9 +558,9 @@ void Puzzle::next(){
     }
     std::cout<<"NEXT"<<std::endl;
     actual++;
-    matriz = (*actual).getMatriz();
-    //for(int i = 0 ; i < 100000000; i++){};
-    //dibujar();
+    copiarM((*actual).getMatriz());
+    for(int i = 0 ; i < 100000000; i++){};
+    dibujar();
     print();
 }
 
@@ -609,7 +704,8 @@ Puzzle::Puzzle(int **m,int n,std::string name, BITMAP * buffer,std::string exten
             }
         }
     }
-    Puzzle nuevo(matriz,goal,vacio,distanciaManhatan);
+    static Puzzle nuevo;
+    copiarPuzzle(nuevo);
     juego.insert(nuevo,distanciaManhatan);
     std::cout<<"hola"<<std::endl;
 }
@@ -724,7 +820,8 @@ Puzzle::Puzzle(int n, std::string name,BITMAP * buffer, std::string extension){
             }
         }
     }
-    Puzzle nuevo(matriz,goal,vacio,distanciaManhatan);
+    static Puzzle nuevo;
+    copiarPuzzle(nuevo);
     juego.insert(nuevo,distanciaManhatan);
     std::cout<<"hola"<<std::endl;
 }
@@ -814,105 +911,33 @@ void desple(Puzzle actual, std::list<std::tuple<int,Puzzle>>&resultado, Puzzle a
     //actual.print();
 
     std::list<Puzzle::Square> vecinos;
-            std::cout<<"ANTERIROVACIOFIL->"<<anterior.matriz[anterior.vacio].fil<<std::endl;
-            std::cout<<"ANTERIROVACIOCOL->"<<anterior.matriz[anterior.vacio].col<<std::endl;
-            std::cout<<"ACTUALVACIOFIL->"<<actual.matriz[actual.vacio].fil<<std::endl;
-            std::cout<<"ACTUALVACIOCOL->"<<actual.matriz[actual.vacio].col<<std::endl;
-
+            //std::cout<<"ANTERIROVACIOFIL->"<<anterior.matriz[anterior.vacio].fil<<std::endl;
+            //std::cout<<"ANTERIROVACIOCOL->"<<anterior.matriz[anterior.vacio].col<<std::endl;
+           // std::cout<<"ACTUALVACIOFIL->"<<actual.matriz[actual.vacio].fil<<std::endl;
+            //std::cout<<"ACTUALVACIOCOL->"<<actual.matriz[actual.vacio].col<<std::endl;
+    std::cout<<"ACTUAL->"<<actual.distanciaManhatan<<std::endl;
+        actual.print();
+        //char t;
+        //std::cin>>t;
     for(int i = 0; i < 4; i++){
         if(actual.matriz[actual.vacio].vecinos[i]){
-            std::cout<<"HOLAAAAAAAAAAAAA"<<std::endl;
-            std::cout<<"VALOR->"<<actual.matriz[actual.vacio].vecinos[i]->valor<<std::endl;
-            std::cout<<actual.matriz[actual.vacio].vecinos[i]->fil<<std::endl;
-            std::cout<<actual.matriz[actual.vacio].vecinos[i]->col<<std::endl;
-            if(actual.matriz[actual.vacio].vecinos[i]->fil != anterior.matriz[anterior.vacio].fil and actual.matriz[actual.vacio].vecinos[i]->col != anterior.matriz[anterior.vacio].col){
-                std::cout<<"WWWWWWWWWWWWWW"<<std::endl;
-            }
+            //std::cout<<"HOLAAAAAAAAAAAAA"<<std::endl;
+            //std::cout<<"VALOR->"<<actual.matriz[actual.vacio].vecinos[i]->valor<<std::endl;
+            //std::cout<<actual.matriz[actual.vacio].vecinos[i]->fil<<std::endl;
+            //std::cout<<actual.matriz[actual.vacio].vecinos[i]->col<<std::endl;
+            //if(actual.matriz[actual.vacio].vecinos[i]->fil != anterior.matriz[anterior.vacio].fil and actual.matriz[actual.vacio].vecinos[i]->col != anterior.matriz[anterior.vacio].col){
+              //  std::cout<<"WWWWWWWWWWWWWW"<<std::endl;
+            //}
         }
 
         if(actual.matriz[actual.vacio].vecinos[i] and (actual.matriz[actual.vacio].vecinos[i]->fil != anterior.matriz[anterior.vacio].fil or  actual.matriz[actual.vacio].vecinos[i]->col != anterior.matriz[anterior.vacio].col)){
-            std::cout<<"ttttttttttttt"<<std::endl;
+            //std::cout<<"ttttttttttttt"<<std::endl;
             vecinos.push_back(*(actual.matriz[actual.vacio].vecinos[i]));
         }
     }
     for(Puzzle::Square s : vecinos){
         static Puzzle nuevo;
-        nuevo.distanciaManhatan = actual.distanciaManhatan;
-        nuevo.goal = actual.goal;
-        nuevo.vacio = actual.vacio;
-
-        std::vector<std::vector<Puzzle::Square *>> vec;
-        for(int i = 0; i < s.n; i++){
-            std::vector<Puzzle::Square*> v;
-            for(int j = 0; j < s.n; j++){
-                v.push_back(nullptr);
-            }
-            vec.push_back(v);
-        }
-        for(int i = 1; i <= s.n * s.n; i++){
-            ///std::cout<<i<<std::endl;
-            Puzzle::Square nS;
-            nS.fil = actual.matriz[i].fil;
-            nS.col = actual.matriz[i].col;
-            nS.valor = i;
-            nS.n = s.n;
-            nS.distanciaM = actual.matriz[i].distanciaM;
-            nuevo.matriz[i] = nS;
-            vec[nS.fil - 1][nS.col - 1] = &(nuevo.matriz[i]);
-        }
-        for(int i = 0; i < vec.size(); i++){
-            for(int j = 0; j < vec.size(); j++){
-                Puzzle::Square * s = vec[i][j];
-                if(s == nullptr){
-                    std::cout<<"AAAAAAAAAAAAAAA"<<std::endl;
-                }
-                int pos = s->getPosicion();
-                switch(pos){
-                    case ARRIBAIZQUIERDA:
-                        s->vecinos[DERECHA] = vec[i][j + 1];
-                        s->vecinos[ABAJO] = vec[i + 1][j];
-                        break;
-                    case ARRIBA:
-                        s->vecinos[IZQUIERDA] = vec[i][j - 1];
-                        s->vecinos[DERECHA] = vec[i][j + 1];
-                        s->vecinos[ABAJO] = vec[i + 1][j];
-                        break;
-                    case ARRIBADERECHA:
-                        s->vecinos[IZQUIERDA] = vec[i][j - 1];
-                        s->vecinos[ABAJO] = vec[i + 1][j];
-                        break;
-                    case DERECHA:
-                        s->vecinos[IZQUIERDA] = vec[i][j - 1];
-                        s->vecinos[ARRIBA] = vec[i - 1][j];
-                        s->vecinos[ABAJO] = vec[i + 1][j];
-                        break;
-                    case ABAJODERECHA:
-                        s->vecinos[IZQUIERDA] = vec[i][j - 1];
-                        s->vecinos[ARRIBA] = vec[i - 1][j];
-                        break;
-                    case ABAJO:
-                        s->vecinos[IZQUIERDA] = vec[i][j - 1];
-                        s->vecinos[ARRIBA] = vec[i - 1][j];
-                        s->vecinos[DERECHA] = vec[i][j + 1];
-                        break;
-                    case ABAJOIZQUIERDA:
-                        s->vecinos[ARRIBA] = vec[i - 1][j];
-                        s->vecinos[DERECHA] = vec[i][j + 1];
-                        break;
-                    case IZQUIERDA:
-                        s->vecinos[ARRIBA] = vec[i - 1][j];
-                        s->vecinos[DERECHA] = vec[i][j + 1];
-                        s->vecinos[ABAJO] = vec[i + 1][j];
-                        break;
-                    case CENTRO:
-                        s->vecinos[IZQUIERDA] = vec[i][j - 1];
-                        s->vecinos[ARRIBA] = vec[i - 1][j];
-                        s->vecinos[DERECHA] = vec[i][j + 1];
-                        s->vecinos[ABAJO] = vec[i + 1][j];
-                        break;
-                }
-            }
-        }
+        actual.copiarPuzzle(nuevo);
         //cout<<"VECINO->"<<s.valor<<endl;
 
         //if(actual.getValor(s.fil,s.col) != valorIncorrecto){

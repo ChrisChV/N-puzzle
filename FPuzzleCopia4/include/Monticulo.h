@@ -4,94 +4,91 @@
 #include "algorithm"
 #include "fstream"
 
-using namespace std;
-
 int _izquierda(int);
 int _derecha(int);
 int _padre(int);
 template <typename T>
-void minheapFy(vector<T> &, int);
+void minheapFy(std::vector<T> &, int);
 template <typename T>
-void maxheapFy(vector <T> &, int);
+void maxheapFy(std::vector <T> &, int);
 template <typename T>
-void maxheapFy(vector <T> &, int,int);
+void maxheapFy(std::vector <T> &, int,int);
 template <typename T>
-bool esHoja(vector<T> &, int);
+bool esHoja(std::vector<T> &, int);
 template <typename T>
-void makeMinHeap(vector<T> &);
+void makeMinHeap(std::vector<T> &);
 template <typename T>
-void makeMaxHeap(vector<T> &);
+void makeMaxHeap(std::vector<T> &);
 template <typename T>
-void heapSort(vector<T> &);
+void heapSort(std::vector<T> &);
 template <typename T>
-void print(vector<T> &);
+void print(std::vector<T> &);
 template <typename T>
-void minHeapDecreaseKey(vector<T> &, int);
+void minHeapDecreaseKey(std::vector<T> &, int);
 template <typename T>
-void maxHeapDeceaseKey(vector<T> &, int);
+void maxHeapDeceaseKey(std::vector<T> &, int);
 template <typename T>
-T getMin(vector<T> &);
+T getMin(std::vector<T> &);
 template <typename T>
-void deleteMin(vector<T> &);
+void deleteMin(std::vector<T> &);
 template <typename T>
-void insert(vector<T> &vec, T);
+void insert(std::vector<T> &vec, T);
 
 template <typename T>
-void minHeapinsert(vector<T> &vec, T valor){
-    vec.pop_back(valor);
+void minHeapinsert(std::vector<T> &vec, T valor){
+    vec.push_back(valor);
     minHeapDecreaseKey(vec, vec.size() - 1);
 }
 
 template <typename T>
-void deleteMin(vector<T> &vec){
-    swap(vec[0], vec[vec.size - 1]);
+void deleteMin(std::vector<T> &vec){
+    std::swap(vec[0], vec[vec.size() - 1]);
     vec.pop_back();
     minheapFy(vec,0);
 }
 
 template <typename T>
-T getMin(vector<T> &vec){
-    if(vec.empty())return;
+T getMin(std::vector<T> &vec){
     return vec.front();
 }
 
 template <typename T>
-void maxHeapDeceaseKey(vector<T> &vec, int index){
+void maxHeapDeceaseKey(std::vector<T> &vec, int index){
     if(index == 0)return;
-    if(vec[index] < vec[_padre(index)])swap(vec[index],vec[_padre(index)]);
+    if(vec[index] < vec[_padre(index)])std::swap(vec[index],vec[_padre(index)]);
     maxHeapDeceaseKey(vec,_padre(index));
 }
 
 template<typename T>
-void minHeapDecreaseKey(vector<T> &vec, int index){
+void minHeapDecreaseKey(std::vector<T> &vec, int index){
     if(index == 0)return;
-    if(vec[index] > vec[_padre(index)])swap(vec[index],vec[_padre(index)]);
+    if(vec[index] > vec[_padre(index)])std::swap(vec[index],vec[_padre(index)]);
     minHeapDecreaseKey(vec,_padre(index));
 }
 
 template <typename T>
-void print(vector<T> &vec){
-    ofstream monti("monti.dot");
+void print(std::vector<T> &vec){
+    std::ofstream monti("monti.dot");
     if(monti.fail()){
-        cout<<"El archvio no se pudo abrir"<<endl;
+        std::cout<<"El archvio no se pudo abrir"<<std::endl;
         return;
     }
-    monti<<"digraph{"<<endl;
+    monti<<"digraph{"<<std::endl;
     for(int i = 0; i < vec.size(); i++){
-        if(_izquierda(i) < vec.size())monti<<vec[i]<<"->"<<vec[_izquierda(i)]<<endl;
-        if(_derecha(i) < vec.size())monti<<vec[i]<<"->"<<vec[_derecha(i)]<<endl;
+        if(_izquierda(i) < vec.size())monti<<vec[i]<<"->"<<vec[_izquierda(i)]<<std::endl;
+        if(_derecha(i) < vec.size())monti<<vec[i]<<"->"<<vec[_derecha(i)]<<std::endl;
     }
     monti<<"}";
     monti.close();
 }
 
 template <typename T>
-void heapSort(vector<T> &vec){
+void heapSort(std::vector<T> &vec){
     makeMaxHeap(vec);
     auto b = vec.size();
     auto s = vec.size() - 1;
     for(int i = 0; i < b - 1; i++){
-        swap(vec[0], vec[s]);
+        std::swap(vec[0], vec[s]);
         s--;
         maxheapFy(vec,0,s);
     }
@@ -99,14 +96,14 @@ void heapSort(vector<T> &vec){
 }
 
 template <typename T>
-void makeMaxHeap(vector<T> &vec){
+void makeMaxHeap(std::vector<T> &vec){
     for(int i = vec.size() / 2; i >= 0; i--){
         maxheapFy(vec, i);
     }
 }
 
 template <typename T>
-void makeMinHeap(vector<T> &vec){
+void makeMinHeap(std::vector<T> &vec){
     for(int i = vec.size() / 2; i >= 0; i--){
         minheapFy(vec,i);
     }
@@ -114,7 +111,7 @@ void makeMinHeap(vector<T> &vec){
 
 
 template <typename T>
-bool esHoja(vector <T> &vec, int index){
+bool esHoja(std::vector <T> &vec, int index){
     auto b = vec.size();
     if(_derecha(index) > b and _izquierda(index) > b)return true;
     return false;
@@ -132,37 +129,37 @@ int _padre(int index){
     return (index - 1)/2;
 }
 template <typename T>
-void minheapFy(vector<T> &vec, int index){
+void minheapFy(std::vector<T> &vec, int index){
     if(esHoja(vec,index))return;
     int menor = index;
     if(vec[_izquierda(index)] < vec[menor])menor = _izquierda(index);
-    if(vec[_derecha(index)] < vec[menor] and _derecha(index) < vec.size())menor = _derecha(index);
+    if(_derecha(index) < vec.size() and vec[_derecha(index)] < vec[menor])menor = _derecha(index);
     if(menor == index)return;
-    swap(vec[index], vec[menor]);
+    std::swap(vec[index], vec[menor]);
     minheapFy(vec, menor);
 
 }
 
 template <typename T>
-void maxheapFy(vector<T> &vec, int index, int tam){
+void maxheapFy(std::vector<T> &vec, int index, int tam){
     if(_izquierda(index) > tam)return;
     if(esHoja(vec,index))return;
     int mayor = index;
     if(vec[_izquierda(index)] > vec[mayor])mayor = _izquierda(index);
     if(vec[_derecha(index)] > vec[mayor] and _derecha(index) < tam)mayor = _derecha(index);
     if(mayor == index)return;
-    swap(vec[index], vec[mayor]);
+    std::swap(vec[index], vec[mayor]);
     maxheapFy(vec, mayor,tam);
 }
 
 template <typename T>
-void maxheapFy(vector<T> &vec, int index){
+void maxheapFy(std::vector<T> &vec, int index){
     if(esHoja(vec,index))return;
     int mayor = index;
     if(vec[_izquierda(index)] > vec[mayor])mayor = _izquierda(index);
     if(vec[_derecha(index)] > vec[mayor])mayor = _derecha(index);
     if(mayor == index)return;
-    swap(vec[index], vec[mayor]);
+    std::swap(vec[index], vec[mayor]);
     maxheapFy(vec, mayor);
 }
 
