@@ -94,6 +94,7 @@ int main()
         ///SOLUCIONADO 36(Ciclo, nivel 0, sin marcado)
         ///HACE BUCLE(Ciclo, +nivel, sin marcado)
         ///NO SOLUCIONADO(Search, +nivel, con marcado)
+        ///SOLUCIONADO 40(Search, nivel 0, con marcado)
     /*
     m2[0][0] = 3;
     m2[0][1] = 7;
