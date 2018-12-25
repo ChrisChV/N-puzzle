@@ -526,7 +526,9 @@ void Puzzle::Resolver(){
     print();
     int t = 0;
     while(true){
+        std::cout<<"GGGG"<<std::endl;
         t = juego.desplegar(camino,distanciaManhatan);
+        std::cout<<"GGGG"<<std::endl;
         if(t == -1){
             std::cout<<"EL PUZZLE NO TIENE SOLUCION :("<<std::endl;
             break;
@@ -770,6 +772,7 @@ Puzzle::Puzzle(int n, std::string name,BITMAP * buffer, std::string extension){
     distanciaManhatan = 0;
     this->buffer = buffer;
     this->name = name;
+    
     std::string file = name + extension;
     std::string file2 = name +".pcx";
     std::string convert = "convert "+ file + " " + file2;
@@ -781,10 +784,14 @@ Puzzle::Puzzle(int n, std::string name,BITMAP * buffer, std::string extension){
     file = name + "/" + file2;
     image = load_bitmap(file.c_str(),NULL);
     int x = image->w / n;
+    
     std::string sX = std::to_string(x);
+    
+    
     int y = image->h / n;
     std::string sY = std::to_string(y);
     std::string crop = "convert " + file + " -crop "+ sX+ "x"+ sY + " "+ file;
+    
     system(crop.c_str());
     std::vector<int> valores;
     int altoImagen  = image->h;

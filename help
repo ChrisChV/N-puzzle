@@ -1,0 +1,16 @@
+n-puzzle
+made by XnpioChV
+
+The program recives an image and generates a n-puzzle game (random or your choice). The game can be solve by an algorithm or by the user.
+
+Ussage:
+
+n-puzzle <imageFile>
+
+Options:
+
+-f <matrixFile>: Use a file with a matrix that you want the puzzle starts. If you don't use this option, the start matrix will be generated randomly.
+-u: The user solves the puzzle (by default).
+-c: The computer solves the puzzle.
+-n <number>: The size of the matrix that is n * n (n = 3 by default).
+
