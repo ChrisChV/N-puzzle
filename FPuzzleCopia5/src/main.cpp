@@ -160,10 +160,10 @@ int main()
     BITMAP *buffer = create_bitmap(ANCHO_VENTANA,ALTO_VENTANA);
     clear_to_color(buffer, 0x999999);
 
-    Puzzle puz(m2,n,"R",buffer,".bmp");
+    Puzzle puz(n,"R",buffer,".bmp");
     //Puzzle puz2(m2,n,"ROMPEYO",buffer,".jpg");
     puz.dibujar();
-    puz.ResolverUsuario();
+    puz.Resolver();
 
     destroy_bitmap(buffer);
     puz.destruir();
