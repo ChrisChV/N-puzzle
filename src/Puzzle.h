@@ -526,9 +526,7 @@ void Puzzle::Resolver(){
     print();
     int t = 0;
     while(true){
-        std::cout<<"GGGG"<<std::endl;
         t = juego.desplegar(camino,distanciaManhatan);
-        std::cout<<"GGGG"<<std::endl;
         if(t == -1){
             std::cout<<"EL PUZZLE NO TIENE SOLUCION :("<<std::endl;
             break;

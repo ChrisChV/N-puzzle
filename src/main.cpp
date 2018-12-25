@@ -33,6 +33,20 @@ void splitFileImg(string img, string & name, string & extention){
     }
 }
 
+void handlePuzz(Puzzle & puz, BITMAP *buffer, bool user){
+    puz.dibujar();
+
+    if(user == true){
+        puz.ResolverUsuario();
+    }
+    else{
+        puz.Resolver();
+    }
+
+    destroy_bitmap(buffer);
+    puz.destruir();
+}
+
 int main(int argc, char ** argv){
     if(argc < 2){
         cout<<"Faltan argumentos. Utilize el comando --help"<<endl;
@@ -88,7 +102,7 @@ int main(int argc, char ** argv){
 
         srand(time(NULL));
 
-        Puzzle puz;
+        
 
         allegro_init();
         install_keyboard();
@@ -119,24 +133,15 @@ int main(int argc, char ** argv){
             }
             matrix.close();
 
-            puz = Puzzle(m2, n, name, buffer, extention);
+            Puzzle puz(m2, n, name, buffer, extention);
+            handlePuzz(puz, buffer, user);
 
         }
         else{
-            puz = Puzzle(n, name, buffer, extention);
+            Puzzle puz(n, name, buffer, extention);
+            handlePuzz(puz, buffer, user);
         }
 
-        puz.dibujar();
-
-        if(user == true){
-            puz.ResolverUsuario();
-        }
-        else{
-            puz.Resolver();
-        }
-
-        destroy_bitmap(buffer);
-        puz.destruir();
         return 0;
     }
 
