@@ -163,7 +163,7 @@ int main()
     Puzzle puz(m2,n,"R",buffer,".bmp");
     //Puzzle puz2(m2,n,"ROMPEYO",buffer,".jpg");
     puz.dibujar();
-    puz.Resolver();
+    puz.ResolverUsuario();
 
     destroy_bitmap(buffer);
     puz.destruir();

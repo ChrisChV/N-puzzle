@@ -7,7 +7,6 @@
 
 #define NOHAYINCORRECTO 1000;
 
-
 template<typename T>
 class ArbolDeJuego
 {
