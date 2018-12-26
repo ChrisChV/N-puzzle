@@ -14,7 +14,7 @@ Implementation of N-puzzle in C++ with allegro.
 * The user can solve the puzzle.
 * The computer can solve the puzzle.
 
-## Ussage
+## Usage
 
 You can see an explanation of the commands ussing:
 
